@@ -14,56 +14,73 @@ document.addEventListener('DOMContentLoaded', () => {
         prince.classList.remove('character-sliding')
         prince.classList.add('character')
         let upTimerId = setInterval(function () {
-          //jump down
-          if (bottom > 250) {
-            clearInterval(upTimerId)
-            let downTimerId = setInterval(function () {
-              if (bottom < 0 ) {
-                clearInterval(downTimerId)
-                isJumping = false
-              }
-              bottom -= 5
-              bottom = bottom * gravity
-              prince.style.bottom = bottom + 'px'
-            },20)
-          }
-          //jump up
-          isJumping = true
-          bottom +=30
-          bottom = bottom * gravity
-          prince.style.bottom = bottom + 'px'
+            //jump down
+            if (bottom > 250) {
+                clearInterval(upTimerId)
+                let downTimerId = setInterval(function () {
+                    if (bottom < 0 ) {
+                        clearInterval(downTimerId)
+                        isJumping = false
+                    }
+                    bottom -= 5
+                    bottom = bottom * gravity
+                    prince.style.bottom = bottom + 'px'
+                },20)
+            }
+            //jump up
+            isJumping = true
+            bottom +=30
+            bottom = bottom * gravity
+            prince.style.bottom = bottom + 'px'
         },20)
-      }
+    }
 
-      function slideLeft() {
+    function slideLeft() {
         prince.classList.remove('character')
         prince.classList.add('character-sliding')
         if (isGoingRight) {
             clearInterval(rightTimerId)
             isGoingRight = false
         }
-        isGoingLeft = true
-        leftTimerId = setInterval(function () {
-            console.log('going left')
-            left -=5
-            prince.style.left = left + 'px'
-        },20)
-      }
+        if (!isGoingLeft) {
+            isGoingLeft = true
+            leftTimerId = setInterval(function () {
+                console.log('going left')
+                left -=5
+                prince.style.left = left + 'px'
+            },20)    
+        }
+    }
 
-      function slideRight() {
+    function slideRight() {
         prince.classList.remove('character')
         prince.classList.add('character-sliding')
         if (isGoingLeft) {
             clearInterval(leftTimerId)
             isGoingLeft = false
         }
-        isGoingRight = true
-        rightTimerId = setInterval(function () {
-            console.log('going right')
-            left +=5
-            prince.style.left = left + 'px'
-        },20)
-      }
+        if (!isGoingRight) {
+            isGoingRight = true
+            rightTimerId = setInterval(function () {
+                console.log('going right')
+                left +=5
+                prince.style.left = left + 'px'
+            },20)    
+        }
+    }
+
+    function stopSlide() {
+        prince.classList.remove('character-sliding')
+        prince.classList.add('character')
+        if (isGoingLeft) {
+            clearInterval(leftTimerId)
+            isGoingLeft = false
+        }
+        if (isGoingRight) {
+            clearInterval(rightTimerId)
+            isGoingRight = false
+        }
+    }
 
     //assign functions to keycodes
     function control(e) {
@@ -73,7 +90,9 @@ document.addEventListener('DOMContentLoaded', () => {
             jump() // if we press the up arrow
         } else if (e.keyCode === 37) {
             slideLeft() // if we press left
-        } 
+        } else if (e.keyCode === 40) {
+            stopSlide() 
+        }
     }
     document.addEventListener('keyup', control)
 })
